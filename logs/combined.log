@@ -33,3 +33,6 @@
 {"level":"info","message":"User Abc with email poo@gmail.com and role user signed up successfully.","service":"scquisitions-api","timestamp":"2026-11-13T02:34:25.208Z"}
 {"level":"info","message":"::1 - - [13/Nov/2026:02:34:25 +0000] \"POST /api/auth/sign-up HTTP/1.1\" 201 108 \"-\" \"PostmanRuntime/7.51.1\"","service":"scquisitions-api","timestamp":"2026-11-13T02:34:25.224Z"}
 {"level":"info","message":"::ffff:127.0.0.1 - - [13/Nov/2026:02:34:37 +0000] \"GET /api/auth HTTP/1.1\" 200 133 \"-\" \"node\"","service":"scquisitions-api","timestamp":"2026-11-13T02:34:37.669Z"}
+{"level":"info","message":"::ffff:127.0.0.1 - - [13/Nov/2026:02:55:46 +0000] \"POST /api/auth/sign-in HTTP/1.1\" 400 115 \"-\" \"node\"","service":"scquisitions-api","timestamp":"2026-11-13T02:55:46.191Z"}
+{"level":"info","message":"User signed out successfully.","service":"scquisitions-api","timestamp":"2026-11-13T02:55:46.198Z"}
+{"level":"info","message":"::ffff:127.0.0.1 - - [13/Nov/2026:02:55:46 +0000] \"POST /api/auth/sign-out HTTP/1.1\" 200 42 \"-\" \"node\"","service":"scquisitions-api","timestamp":"2026-11-13T02:55:46.199Z"}

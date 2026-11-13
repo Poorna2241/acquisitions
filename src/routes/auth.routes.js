@@ -1,5 +1,5 @@
 import express from 'express';
-import { signUp } from '#controllers/auth.controller.js';
+import { signIn, signOut, signUp } from '#controllers/auth.controller.js';
 
 const router = express.Router();
 
@@ -12,13 +12,9 @@ router.get('/', (req, res) => {
 
 router.post('/sign-up', signUp);
 
-router.post('/sign-in', (req, res) => {
-  res.send('POST /api/auth/sign-in response');
-});
+router.post('/sign-in', signIn);
 
-router.post('/sign-out', (req, res) => {
-  res.send('POST /api/auth/sign-out response');
-});
+router.post('/sign-out', signOut);
 
 export default router;
 
