@@ -23,3 +23,13 @@
 {"level":"info","message":"Health check","service":"scquisitions-api","timestamp":"2026-11-11T10:42:54.134Z"}
 {"level":"info","message":"::1 - - [11/Nov/2026:10:42:54 +0000] \"GET /health HTTP/1.1\" 200 75 \"-\" \"PostmanRuntime/7.51.1\"","service":"scquisitions-api","timestamp":"2026-11-11T10:42:54.134Z"}
 {"level":"info","message":"::1 - - [11/Nov/2026:10:43:22 +0000] \"POST /api/auth/sign-in HTTP/1.1\" 200 31 \"-\" \"PostmanRuntime/7.51.1\"","service":"scquisitions-api","timestamp":"2026-11-11T10:43:22.007Z"}
+{"level":"info","message":"::ffff:127.0.0.1 - - [13/Nov/2026:02:05:25 +0000] \"POST /api/auth/sign-up HTTP/1.1\" 400 167 \"-\" \"node\"","service":"scquisitions-api","timestamp":"2026-11-13T02:05:25.126Z"}
+{"level":"info","message":"User Test User with email test@example.com and role user signed up successfully.","service":"scquisitions-api","timestamp":"2026-11-13T02:05:25.134Z"}
+{"level":"info","message":"::ffff:127.0.0.1 - - [13/Nov/2026:02:05:25 +0000] \"POST /api/auth/sign-up HTTP/1.1\" 201 110 \"-\" \"node\"","service":"scquisitions-api","timestamp":"2026-11-13T02:05:25.135Z"}
+{"level":"info","message":"User Test User with email test@example.com and role user signed up successfully.","service":"scquisitions-api","timestamp":"2026-11-13T02:05:53.210Z"}
+{"level":"info","message":"::ffff:127.0.0.1 - - [13/Nov/2026:02:05:53 +0000] \"POST /api/auth/sign-up HTTP/1.1\" 201 110 \"-\" \"node\"","service":"scquisitions-api","timestamp":"2026-11-13T02:05:53.214Z"}
+{"level":"info","message":"::1 - - [13/Nov/2026:02:06:23 +0000] \"POST /api/auth/sign-up HTTP/1.1\" 400 92 \"-\" \"PostmanRuntime/7.51.1\"","service":"scquisitions-api","timestamp":"2026-11-13T02:06:23.302Z"}
+{"level":"info","message":"User Abc with email poo@gmail.com and role user created successfully.","service":"scquisitions-api","timestamp":"2026-11-13T02:34:25.119Z"}
+{"level":"info","message":"User Abc with email poo@gmail.com and role user signed up successfully.","service":"scquisitions-api","timestamp":"2026-11-13T02:34:25.208Z"}
+{"level":"info","message":"::1 - - [13/Nov/2026:02:34:25 +0000] \"POST /api/auth/sign-up HTTP/1.1\" 201 108 \"-\" \"PostmanRuntime/7.51.1\"","service":"scquisitions-api","timestamp":"2026-11-13T02:34:25.224Z"}
+{"level":"info","message":"::ffff:127.0.0.1 - - [13/Nov/2026:02:34:37 +0000] \"GET /api/auth HTTP/1.1\" 200 133 \"-\" \"node\"","service":"scquisitions-api","timestamp":"2026-11-13T02:34:37.669Z"}
