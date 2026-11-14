@@ -36,3 +36,21 @@
 {"level":"info","message":"::ffff:127.0.0.1 - - [13/Nov/2026:02:55:46 +0000] \"POST /api/auth/sign-in HTTP/1.1\" 400 115 \"-\" \"node\"","service":"scquisitions-api","timestamp":"2026-11-13T02:55:46.191Z"}
 {"level":"info","message":"User signed out successfully.","service":"scquisitions-api","timestamp":"2026-11-13T02:55:46.198Z"}
 {"level":"info","message":"::ffff:127.0.0.1 - - [13/Nov/2026:02:55:46 +0000] \"POST /api/auth/sign-out HTTP/1.1\" 200 42 \"-\" \"node\"","service":"scquisitions-api","timestamp":"2026-11-13T02:55:46.199Z"}
+{"level":"info","message":"User Abc with email poo@gmail.com signed in successfully.","service":"scquisitions-api","timestamp":"2026-11-13T02:57:15.516Z"}
+{"level":"info","message":"::1 - - [13/Nov/2026:02:57:15 +0000] \"POST /api/auth/sign-in HTTP/1.1\" 200 108 \"-\" \"PostmanRuntime/7.51.1\"","service":"scquisitions-api","timestamp":"2026-11-13T02:57:15.525Z"}
+{"level":"info","message":"Health check","service":"scquisitions-api","timestamp":"2026-11-14T02:29:26.128Z"}
+{"level":"info","message":"::ffff:127.0.0.1 - - [14/Nov/2026:02:29:26 +0000] \"GET /health HTTP/1.1\" 200 73 \"-\" \"node\"","service":"scquisitions-api","timestamp":"2026-11-14T02:29:26.133Z"}
+{"level":"info","message":"Health check","service":"scquisitions-api","timestamp":"2026-11-14T02:30:13.377Z"}
+{"level":"info","message":"::ffff:127.0.0.1 - - [14/Nov/2026:02:30:13 +0000] \"GET /health HTTP/1.1\" 200 73 \"-\" \"node\"","service":"scquisitions-api","timestamp":"2026-11-14T02:30:13.383Z"}
+{"ip":"::1","level":"warn","message":"Bot detected: [object Object]","path":"/health","service":"scquisitions-api","timestamp":"2026-11-14T02:31:41.883Z","userAgent":"PostmanRuntime/7.51.1"}
+{"level":"info","message":"::1 - - [14/Nov/2026:02:31:41 +0000] \"GET /health HTTP/1.1\" 403 46 \"-\" \"PostmanRuntime/7.51.1\"","service":"scquisitions-api","timestamp":"2026-11-14T02:31:41.888Z"}
+{"ip":"::1","level":"warn","message":"Bot detected: [object Object]","path":"/health","service":"scquisitions-api","timestamp":"2026-11-14T02:31:52.390Z","userAgent":"PostmanRuntime/7.51.1"}
+{"level":"info","message":"::1 - - [14/Nov/2026:02:31:52 +0000] \"GET /health HTTP/1.1\" 403 46 \"-\" \"PostmanRuntime/7.51.1\"","service":"scquisitions-api","timestamp":"2026-11-14T02:31:52.397Z"}
+{"ip":"::1","level":"warn","message":"Bot detected: [object Object]","path":"/health","service":"scquisitions-api","timestamp":"2026-11-14T02:32:04.252Z","userAgent":"PostmanRuntime/7.51.1"}
+{"level":"info","message":"::1 - - [14/Nov/2026:02:32:04 +0000] \"GET /health HTTP/1.1\" 403 46 \"-\" \"PostmanRuntime/7.51.1\"","service":"scquisitions-api","timestamp":"2026-11-14T02:32:04.255Z"}
+{"ip":"::1","level":"warn","message":"Bot detected: [object Object]","path":"/health","service":"scquisitions-api","timestamp":"2026-11-14T02:32:04.657Z","userAgent":"PostmanRuntime/7.51.1"}
+{"level":"info","message":"::1 - - [14/Nov/2026:02:32:04 +0000] \"GET /health HTTP/1.1\" 403 46 \"-\" \"PostmanRuntime/7.51.1\"","service":"scquisitions-api","timestamp":"2026-11-14T02:32:04.658Z"}
+{"ip":"::1","level":"warn","message":"Bot detected: [object Object]","path":"/health","service":"scquisitions-api","timestamp":"2026-11-14T02:32:05.162Z","userAgent":"PostmanRuntime/7.51.1"}
+{"level":"info","message":"::1 - - [14/Nov/2026:02:32:05 +0000] \"GET /health HTTP/1.1\" 403 46 \"-\" \"PostmanRuntime/7.51.1\"","service":"scquisitions-api","timestamp":"2026-11-14T02:32:05.162Z"}
+{"ip":"::1","level":"warn","message":"Bot detected: [object Object]","path":"/health","service":"scquisitions-api","timestamp":"2026-11-14T02:32:07.575Z","userAgent":"PostmanRuntime/7.51.1"}
+{"level":"info","message":"::1 - - [14/Nov/2026:02:32:07 +0000] \"GET /health HTTP/1.1\" 403 46 \"-\" \"PostmanRuntime/7.51.1\"","service":"scquisitions-api","timestamp":"2026-11-14T02:32:07.578Z"}
