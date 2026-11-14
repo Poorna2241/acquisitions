@@ -1,0 +1,26 @@
+services:
+  app:
+    build:
+      context: .
+      target: development
+    env_file:
+      - .env.development
+    environment:
+      NODE_ENV: development
+      DATABASE_URL: postgres://neon:npg@neon-local:5432/neondb?sslmode=require
+      NEON_FETCH_ENDPOINT: http://neon-local:5432/sql
+    ports:
+      - '3000:3000'
+    volumes:
+      - .:/app
+      - /app/node_modules
+    depends_on:
+      - neon-local
+
+  neon-local:
+    image: neondatabase/neon_local:latest
+    ports:
+      - '5432:5432'
+    env_file:
+      - .env.development
+      
