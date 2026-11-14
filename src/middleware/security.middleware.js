@@ -24,19 +24,19 @@ const securityMiddleware = async (req, res, next) => {
             max: limit, // Dynamic limit based on user role
         }));
 
-        const decision = await client.protect(req, { requested: 1 });
-        if (decision.isDenied() && decision.reason.isBot()) {
-            logger.warn(`Bot detected: ${decision.reason}`, { ip: req.ip, userAgent: req.get("User-Agent"),path: req.path });
-            return res.status(403).json({ error: "Forbidden", message: "Bot detected" });
-        }
-        if (decision.isDenied() && decision.reason.isShield()) {
-            logger.warn(`Shield detected: ${decision.reason}`, { ip: req.ip, userAgent: req.get("User-Agent"),path: req.path });
-            return res.status(403).json({ error: "Forbidden", message: "Shield detected" });
-        }
-        if (decision.isDenied() && decision.reason.isRateLimit()) {
-            logger.warn(`Rate limit exceeded: ${decision.reason}`, { ip: req.ip, userAgent: req.get("User-Agent"),path: req.path });
-            return res.status(403).json({ error: "Forbidden", message: "Rate limit exceeded" });
-        }
+        // const decision = await client.protect(req, { requested: 1 });
+        // if (decision.isDenied() && decision.reason.isBot()) {
+        //     logger.warn(`Bot detected: ${decision.reason}`, { ip: req.ip, userAgent: req.get("User-Agent"),path: req.path });
+        //     return res.status(403).json({ error: "Forbidden", message: "Bot detected" });
+        // }
+        // if (decision.isDenied() && decision.reason.isShield()) {
+        //     logger.warn(`Shield detected: ${decision.reason}`, { ip: req.ip, userAgent: req.get("User-Agent"),path: req.path });
+        //     return res.status(403).json({ error: "Forbidden", message: "Shield detected" });
+        // }
+        // if (decision.isDenied() && decision.reason.isRateLimit()) {
+        //     logger.warn(`Rate limit exceeded: ${decision.reason}`, { ip: req.ip, userAgent: req.get("User-Agent"),path: req.path });
+        //     return res.status(403).json({ error: "Forbidden", message: "Rate limit exceeded" });
+        // }
 
         next();
 

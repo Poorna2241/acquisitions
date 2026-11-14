@@ -4,4 +4,4 @@ node_modules
 .neon_local
 !.env.example
 !.env.development.example
-!.env.production.example
+!.env.production.example.neon_local/

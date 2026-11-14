@@ -56,3 +56,14 @@
 {"level":"info","message":"::1 - - [14/Nov/2026:02:32:07 +0000] \"GET /health HTTP/1.1\" 403 46 \"-\" \"PostmanRuntime/7.51.1\"","service":"scquisitions-api","timestamp":"2026-11-14T02:32:07.578Z"}
 {"level":"info","message":"Health check","service":"scquisitions-api","timestamp":"2026-11-14T02:42:17.957Z"}
 {"level":"info","message":"::ffff:127.0.0.1 - - [14/Nov/2026:02:42:17 +0000] \"GET /health HTTP/1.1\" 200 73 \"-\" \"node\"","service":"scquisitions-api","timestamp":"2026-11-14T02:42:17.974Z"}
+{"level":"info","message":"Hello acquisitions","service":"scquisitions-api","timestamp":"2026-11-14T10:29:30.142Z"}
+{"level":"info","message":"::ffff:172.18.0.1 - - [14/Nov/2026:10:29:30 +0000] \"GET / HTTP/1.1\" 304 - \"-\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:160.0) Gecko/20100101 Firefox/160.0\"","service":"scquisitions-api","timestamp":"2026-11-14T10:29:30.156Z"}
+{"ip":"::ffff:172.18.0.1","level":"warn","message":"Bot detected: [object Object]","path":"/api/auth/sign-up","service":"scquisitions-api","timestamp":"2026-11-14T10:34:03.253Z","userAgent":"PostmanRuntime/7.51.1"}
+{"level":"info","message":"::ffff:172.18.0.1 - - [14/Nov/2026:10:34:03 +0000] \"POST /api/auth/sign-up HTTP/1.1\" 403 46 \"-\" \"PostmanRuntime/7.51.1\"","service":"scquisitions-api","timestamp":"2026-11-14T10:34:03.255Z"}
+{"ip":"::ffff:172.18.0.1","level":"warn","message":"Bot detected: [object Object]","path":"/api/auth/sign-up","service":"scquisitions-api","timestamp":"2026-11-14T10:34:41.058Z","userAgent":"PostmanRuntime/7.51.1"}
+{"level":"info","message":"::ffff:172.18.0.1 - - [14/Nov/2026:10:34:41 +0000] \"POST /api/auth/sign-up HTTP/1.1\" 403 46 \"-\" \"PostmanRuntime/7.51.1\"","service":"scquisitions-api","timestamp":"2026-11-14T10:34:41.059Z"}
+{"ip":"::ffff:172.18.0.1","level":"warn","message":"Bot detected: [object Object]","path":"/api/auth/sign-up","service":"scquisitions-api","timestamp":"2026-11-14T10:34:43.382Z","userAgent":"PostmanRuntime/7.51.1"}
+{"level":"info","message":"::ffff:172.18.0.1 - - [14/Nov/2026:10:34:43 +0000] \"POST /api/auth/sign-up HTTP/1.1\" 403 46 \"-\" \"PostmanRuntime/7.51.1\"","service":"scquisitions-api","timestamp":"2026-11-14T10:34:43.382Z"}
+{"ip":"::ffff:172.18.0.1","level":"warn","message":"Bot detected: [object Object]","path":"/api/auth/sign-up","service":"scquisitions-api","timestamp":"2026-11-14T10:35:29.866Z","userAgent":"PostmanRuntime/7.51.1"}
+{"level":"info","message":"::ffff:172.18.0.1 - - [14/Nov/2026:10:35:29 +0000] \"POST /api/auth/sign-up HTTP/1.1\" 403 46 \"-\" \"PostmanRuntime/7.51.1\"","service":"scquisitions-api","timestamp":"2026-11-14T10:35:29.867Z"}
+{"ip":"::ffff:172.18.0.1","level":"warn","message":"Bot detected: [object Object]","path":"/api/auth/sign-up","service":"scquisitions-api","timestamp":"2026-11-14T10:35:31.453Z","userAgent":"PostmanRuntime/7.51.1"}
