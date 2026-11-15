@@ -1,11 +1,12 @@
-import { fetchAllUsers } from '#controllers/user.controller.js';
+import {fetchAllUsers, getUserById, updateUser, deleteUser} from '#controllers/user.controller.js';
+import {authenticate} from '#middleware/auth.middleware.js';
 import express from 'express';
 
 const router = express.Router();
 
 router.get('/', fetchAllUsers);
-router.get('/:id', (req, res) => res.send(`GET /users/${req.params.id} route`));
-router.put('/:id', (req, res) => res.send(`PUT /users/${req.params.id} route`));
-router.delete('/:id', (req, res) => res.send(`DELETE /users/${req.params.id} route`));
+router.get('/:id', getUserById);
+router.put('/:id', authenticate, updateUser);
+router.delete('/:id', authenticate, deleteUser);
 
 export default router;
