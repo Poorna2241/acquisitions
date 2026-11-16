@@ -1,0 +1,71 @@
+name: Tests
+
+on:
+  push:
+    branches:
+      - main
+      - staging
+  pull_request:
+    branches:
+      - main
+      - staging
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    env:
+      NODE_ENV: test
+      NODE_OPTIONS: --experimental-vm-modules
+      DATABASE_URL: postgresql://test:test@localhost:5432/test
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run tests
+        id: test
+        continue-on-error: true
+        run: npm test
+
+      - name: Upload coverage report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: coverage/
+          retention-days: 30
+          if-no-files-found: warn
+
+      - name: Add test results to step summary
+        if: always()
+        run: |
+          {
+            echo "## Test results"
+            if [ "${{ steps.test.outcome }}" = "success" ]; then
+              echo "✅ Tests passed."
+            else
+              echo "❌ Tests failed."
+            fi
+            if [ -f coverage/lcov.info ]; then
+              echo ""
+              echo "Coverage report: \`coverage/lcov.info\` (uploaded as an artifact)."
+            else
+              echo ""
+              echo "Coverage report was not generated."
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Annotate test failure
+        if: steps.test.outcome == 'failure'
+        run: |
+          echo "::error title=Tests failed::Review the test output and the uploaded coverage report."
+          exit 1
