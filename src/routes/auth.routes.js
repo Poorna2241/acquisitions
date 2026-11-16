@@ -6,7 +6,11 @@ const router = express.Router();
 router.get('/', (req, res) => {
   res.status(200).json({
     message: 'Authentication API is working',
-    endpoints: ['POST /api/auth/sign-up', 'POST /api/auth/sign-in', 'POST /api/auth/sign-out'],
+    endpoints: [
+      'POST /api/auth/sign-up',
+      'POST /api/auth/sign-in',
+      'POST /api/auth/sign-out',
+    ],
   });
 });
 
@@ -17,4 +21,3 @@ router.post('/sign-in', signIn);
 router.post('/sign-out', signOut);
 
 export default router;
-

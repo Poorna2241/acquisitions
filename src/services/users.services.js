@@ -1,31 +1,37 @@
 import logger from '#config/logger.js';
-import {db} from '#config/database.js';
-import {users} from '#models/user.model.js';
-import {eq} from 'drizzle-orm';
-import {hashPassword} from '#services/auth.service.js';
+import { db } from '#config/database.js';
+import { users } from '#models/user.model.js';
+import { eq } from 'drizzle-orm';
+import { hashPassword } from '#services/auth.service.js';
 
 export const getAllUsers = async () => {
   try {
-    return await db.select({
-      id: users.id,
-      name: users.name,
-      email: users.email,
-      role: users.role,
-    }).from(users);
+    return await db
+      .select({
+        id: users.id,
+        name: users.name,
+        email: users.email,
+        role: users.role,
+      })
+      .from(users);
   } catch (error) {
     logger.error('Error fetching all users', { error });
     throw error;
   }
 };
 
-export const getUserById = async (id) => {
+export const getUserById = async id => {
   try {
-    const [user] = await db.select({
-      id: users.id,
-      name: users.name,
-      email: users.email,
-      role: users.role,
-    }).from(users).where(eq(users.id, id)).limit(1);
+    const [user] = await db
+      .select({
+        id: users.id,
+        name: users.name,
+        email: users.email,
+        role: users.role,
+      })
+      .from(users)
+      .where(eq(users.id, id))
+      .limit(1);
 
     return user;
   } catch (error) {
@@ -41,13 +47,14 @@ export const updateUser = async (id, updates) => {
       throw new Error('User not found');
     }
 
-    const values = {...updates};
+    const values = { ...updates };
     if (values.password) {
       values.password = await hashPassword(values.password);
     }
     values.updatedAt = new Date();
 
-    const [updatedUser] = await db.update(users)
+    const [updatedUser] = await db
+      .update(users)
       .set(values)
       .where(eq(users.id, id))
       .returning({
@@ -64,9 +71,10 @@ export const updateUser = async (id, updates) => {
   }
 };
 
-export const deleteUser = async (id) => {
+export const deleteUser = async id => {
   try {
-    const [deletedUser] = await db.delete(users)
+    const [deletedUser] = await db
+      .delete(users)
       .where(eq(users.id, id))
       .returning({
         id: users.id,
