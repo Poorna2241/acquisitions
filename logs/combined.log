@@ -96,3 +96,8 @@
 {"level":"info","message":"User Abc with email poorna@gmail.com and role user created successfully.","service":"scquisitions-api","timestamp":"2026-11-14T11:52:56.804Z"}
 {"level":"info","message":"User Abc with email poorna@gmail.com and role user signed up successfully.","service":"scquisitions-api","timestamp":"2026-11-14T11:52:56.808Z"}
 {"level":"info","message":"::ffff:172.18.0.1 - - [14/Nov/2026:11:52:56 +0000] \"POST /api/auth/sign-up HTTP/1.1\" 201 111 \"-\" \"PostmanRuntime/7.51.1\"","service":"scquisitions-api","timestamp":"2026-11-14T11:52:56.808Z"}
+{"level":"info","message":"Health check","service":"scquisitions-api","timestamp":"2026-11-15T02:28:52.625Z"}
+{"level":"info","message":"127.0.0.1 - - [15/Nov/2026:02:28:52 +0000] \"GET /health HTTP/1.1\" 200 73 \"-\" \"-\"","service":"scquisitions-api","timestamp":"2026-11-15T02:28:52.630Z"}
+{"level":"info","message":"API check","service":"scquisitions-api","timestamp":"2026-11-15T02:28:52.639Z"}
+{"level":"info","message":"127.0.0.1 - - [15/Nov/2026:02:28:52 +0000] \"GET /api HTTP/1.1\" 200 81 \"-\" \"-\"","service":"scquisitions-api","timestamp":"2026-11-15T02:28:52.640Z"}
+{"level":"info","message":"127.0.0.1 - - [15/Nov/2026:02:28:52 +0000] \"GET /nonexsistent HTTP/1.1\" 404 27 \"-\" \"-\"","service":"scquisitions-api","timestamp":"2026-11-15T02:28:52.645Z"}
