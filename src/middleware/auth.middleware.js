@@ -4,7 +4,13 @@ import { jwttoken } from '#utils/jwt.js';
 
 export const authenticate = (req, res, next) => {
   try {
-    const token = cookies.get(req, 'token');
+    const authHeader = req.headers.authorization;
+    const bearerToken =
+      authHeader && authHeader.startsWith('Bearer ')
+        ? authHeader.split(' ')[1]
+        : null;
+    const token = cookies.get(req, 'token') || bearerToken;
+
     if (!token) {
       return res.status(401).json({ error: 'Authentication required' });
     }
