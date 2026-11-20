@@ -8,6 +8,13 @@
       "when": 1794191878878,
       "tag": "0000_fine_wind_dancer",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1795088871871,
+      "tag": "0001_watery_squirrel_girl",
+      "breakpoints": true
     }
   ]
 }

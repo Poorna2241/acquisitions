@@ -7,6 +7,9 @@ import cookieParser from 'cookie-parser';
 import authRoutes from '#routes/auth.routes.js';
 import securityMiddleware from '#middleware/security.middleware.js';
 import usersRoutes from '#routes/users.routes.js';
+import categoryRoutes from '#routes/category.routes.js';
+import brandRoutes from '#routes/brand.routes.js';
+import productRoutes from '#routes/product.routes.js';
 
 const app = express();
 
@@ -48,6 +51,9 @@ app.get('/api', (req, res) => {
 
 app.use('/api/auth', authRoutes);
 app.use('/api/users', usersRoutes);
+app.use('/api/categories', categoryRoutes);
+app.use('/api/brands', brandRoutes);
+app.use('/api/products', productRoutes);
 
 app.use((req, res) => {
   res.status(404).json({ error: 'Route not found' });
