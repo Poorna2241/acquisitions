@@ -5,6 +5,7 @@ import { categories } from '#models/category.model.js';
 import { brands } from '#models/brand.model.js';
 import { eq, and, gte, lte, gt, ilike, or, desc, asc, sql } from 'drizzle-orm';
 import { slugify } from '#utils/slug.js';
+import { parsePriceBracket } from '#utils/price.js';
 import { getCategoryById } from '#services/category.service.js';
 import { getBrandById } from '#services/brand.service.js';
 
@@ -60,43 +61,91 @@ export const getProducts = async (filters = {}) => {
       page = 1,
       limit = 20,
       categoryId,
+      categorySlug,
       brandId,
+      brandSlug,
       minPrice,
       maxPrice,
+      priceBracket,
       inStock,
+      minRating,
       search,
       sortBy = 'newest',
+      sortOrder,
+      includeFacets = false,
     } = filters;
+
+    // Resolve price bracket into minPrice and maxPrice if provided
+    let effectiveMinPrice = minPrice;
+    let effectiveMaxPrice = maxPrice;
+
+    if (priceBracket) {
+      const parsedBracket = parsePriceBracket(priceBracket);
+      if (parsedBracket) {
+        if (
+          effectiveMinPrice === undefined &&
+          parsedBracket.minPrice !== null &&
+          parsedBracket.minPrice !== undefined
+        ) {
+          effectiveMinPrice = parsedBracket.minPrice;
+        }
+        if (
+          effectiveMaxPrice === undefined &&
+          parsedBracket.maxPrice !== null &&
+          parsedBracket.maxPrice !== undefined
+        ) {
+          effectiveMaxPrice = parsedBracket.maxPrice;
+        }
+      }
+    }
 
     const conditions = [];
 
     // Always only show active products by default unless specified
-    conditions.push(eq(products.isActive, true));
+    if (filters.isActive !== undefined) {
+      conditions.push(eq(products.isActive, filters.isActive));
+    } else {
+      conditions.push(eq(products.isActive, true));
+    }
 
     if (categoryId) {
       conditions.push(eq(products.categoryId, categoryId));
+    }
+
+    if (categorySlug) {
+      conditions.push(eq(categories.slug, categorySlug));
     }
 
     if (brandId) {
       conditions.push(eq(products.brandId, brandId));
     }
 
-    if (minPrice !== undefined) {
-      conditions.push(gte(products.basePrice, minPrice.toString()));
+    if (brandSlug) {
+      conditions.push(eq(brands.slug, brandSlug));
     }
 
-    if (maxPrice !== undefined) {
-      conditions.push(lte(products.basePrice, maxPrice.toString()));
+    if (effectiveMinPrice !== undefined && effectiveMinPrice !== null) {
+      conditions.push(gte(products.basePrice, effectiveMinPrice.toString()));
+    }
+
+    if (effectiveMaxPrice !== undefined && effectiveMaxPrice !== null) {
+      conditions.push(lte(products.basePrice, effectiveMaxPrice.toString()));
     }
 
     if (inStock === true) {
       conditions.push(gt(products.stockQuantity, 0));
     }
 
-    if (search) {
-      const searchPattern = `%${search}%`;
+    if (minRating !== undefined && minRating !== null) {
+      conditions.push(gte(products.averageRating, minRating.toString()));
+    }
+
+    const trimmedSearch = search ? search.trim() : '';
+    if (trimmedSearch) {
+      const searchPattern = `%${trimmedSearch}%`;
       conditions.push(
         or(
+          sql`to_tsvector('english', coalesce(${products.title}, '') || ' ' || coalesce(${products.description}, '')) @@ plainto_tsquery('english', ${trimmedSearch})`,
           ilike(products.title, searchPattern),
           ilike(products.description, searchPattern),
           ilike(products.sku, searchPattern)
@@ -107,20 +156,68 @@ export const getProducts = async (filters = {}) => {
     const whereClause = and(...conditions);
 
     // Sorting
-    let orderByClause;
+    const isAscending = sortOrder === 'asc' || sortBy.endsWith('_asc');
+    let orderByClauses = [];
+
     switch (sortBy) {
+      case 'price':
       case 'price_asc':
-        orderByClause = asc(products.basePrice);
-        break;
       case 'price_desc':
-        orderByClause = desc(products.basePrice);
+        orderByClauses = [
+          isAscending ? asc(products.basePrice) : desc(products.basePrice),
+        ];
         break;
+
+      case 'popularity':
+      case 'popular':
+      case 'popularity_desc':
+      case 'popularity_asc':
+        orderByClauses = isAscending
+          ? [asc(products.reviewCount), asc(products.averageRating)]
+          : [desc(products.reviewCount), desc(products.averageRating)];
+        break;
+
       case 'rating':
-        orderByClause = desc(products.averageRating);
+      case 'rating_desc':
+      case 'rating_asc':
+        orderByClauses = isAscending
+          ? [asc(products.averageRating), asc(products.reviewCount)]
+          : [desc(products.averageRating), desc(products.reviewCount)];
         break;
+
+      case 'date':
+      case 'date_asc':
+      case 'date_desc':
+      case 'oldest':
+        orderByClauses =
+          isAscending || sortBy === 'oldest' || sortBy === 'date_asc'
+            ? [asc(products.createdAt)]
+            : [desc(products.createdAt)];
+        break;
+
+      case 'relevance':
+        if (trimmedSearch) {
+          orderByClauses = [
+            desc(
+              sql`ts_rank(to_tsvector('english', coalesce(${products.title}, '') || ' ' || coalesce(${products.description}, '')), plainto_tsquery('english', ${trimmedSearch}))`
+            ),
+          ];
+        } else {
+          orderByClauses = [desc(products.createdAt)];
+        }
+        break;
+
+      case 'name_asc':
+        orderByClauses = [asc(products.title)];
+        break;
+
+      case 'name_desc':
+        orderByClauses = [desc(products.title)];
+        break;
+
       case 'newest':
       default:
-        orderByClause = desc(products.createdAt);
+        orderByClauses = [desc(products.createdAt)];
         break;
     }
 
@@ -128,9 +225,12 @@ export const getProducts = async (filters = {}) => {
     const [countResult] = await db
       .select({ count: sql`count(*)` })
       .from(products)
+      .leftJoin(categories, eq(products.categoryId, categories.id))
+      .leftJoin(brands, eq(products.brandId, brands.id))
       .where(whereClause);
 
     const totalCount = parseInt(countResult?.count || 0, 10);
+    const totalPages = totalCount > 0 ? Math.ceil(totalCount / limit) : 0;
     const offset = (page - 1) * limit;
 
     const items = await db
@@ -160,17 +260,131 @@ export const getProducts = async (filters = {}) => {
       .leftJoin(categories, eq(products.categoryId, categories.id))
       .leftJoin(brands, eq(products.brandId, brands.id))
       .where(whereClause)
-      .orderBy(orderByClause)
+      .orderBy(...orderByClauses)
       .limit(limit)
       .offset(offset);
 
+    const pagination = {
+      total: totalCount,
+      page,
+      limit,
+      totalPages,
+      hasNextPage: page < totalPages,
+      hasPrevPage: page > 1 && totalPages > 0,
+      nextPage: page < totalPages ? page + 1 : null,
+      prevPage: page > 1 && page <= totalPages + 1 ? page - 1 : null,
+    };
+
+    let facets = undefined;
+    if (includeFacets) {
+      const facetConditions = [];
+      if (filters.isActive !== undefined) {
+        facetConditions.push(eq(products.isActive, filters.isActive));
+      } else {
+        facetConditions.push(eq(products.isActive, true));
+      }
+      if (categoryId) facetConditions.push(eq(products.categoryId, categoryId));
+      if (categorySlug) facetConditions.push(eq(categories.slug, categorySlug));
+      if (brandId) facetConditions.push(eq(products.brandId, brandId));
+      if (brandSlug) facetConditions.push(eq(brands.slug, brandSlug));
+      if (inStock === true) facetConditions.push(gt(products.stockQuantity, 0));
+      if (minRating !== undefined && minRating !== null) {
+        facetConditions.push(gte(products.averageRating, minRating.toString()));
+      }
+      if (trimmedSearch) {
+        const searchPattern = `%${trimmedSearch}%`;
+        facetConditions.push(
+          or(
+            sql`to_tsvector('english', coalesce(${products.title}, '') || ' ' || coalesce(${products.description}, '')) @@ plainto_tsquery('english', ${trimmedSearch})`,
+            ilike(products.title, searchPattern),
+            ilike(products.description, searchPattern),
+            ilike(products.sku, searchPattern)
+          )
+        );
+      }
+      const facetWhereClause = and(...facetConditions);
+
+      const [facetCounts] = await db
+        .select({
+          under_25: sql`COUNT(CASE WHEN CAST(${products.basePrice} AS NUMERIC) < 25 THEN 1 END)`,
+          b_25_50: sql`COUNT(CASE WHEN CAST(${products.basePrice} AS NUMERIC) >= 25 AND CAST(${products.basePrice} AS NUMERIC) <= 50 THEN 1 END)`,
+          b_50_100: sql`COUNT(CASE WHEN CAST(${products.basePrice} AS NUMERIC) >= 50 AND CAST(${products.basePrice} AS NUMERIC) <= 100 THEN 1 END)`,
+          b_100_200: sql`COUNT(CASE WHEN CAST(${products.basePrice} AS NUMERIC) >= 100 AND CAST(${products.basePrice} AS NUMERIC) <= 200 THEN 1 END)`,
+          b_200_500: sql`COUNT(CASE WHEN CAST(${products.basePrice} AS NUMERIC) >= 200 AND CAST(${products.basePrice} AS NUMERIC) <= 500 THEN 1 END)`,
+          b_500_above: sql`COUNT(CASE WHEN CAST(${products.basePrice} AS NUMERIC) >= 500 THEN 1 END)`,
+        })
+        .from(products)
+        .leftJoin(categories, eq(products.categoryId, categories.id))
+        .leftJoin(brands, eq(products.brandId, brands.id))
+        .where(facetWhereClause);
+
+      facets = {
+        priceBrackets: [
+          {
+            id: 'under-25',
+            label: 'Under $25',
+            min: 0,
+            max: 25,
+            count: parseInt(facetCounts?.under_25 || 0, 10),
+          },
+          {
+            id: '25-50',
+            label: '$25 to $50',
+            min: 25,
+            max: 50,
+            count: parseInt(facetCounts?.b_25_50 || 0, 10),
+          },
+          {
+            id: '50-100',
+            label: '$50 to $100',
+            min: 50,
+            max: 100,
+            count: parseInt(facetCounts?.b_50_100 || 0, 10),
+          },
+          {
+            id: '100-200',
+            label: '$100 to $200',
+            min: 100,
+            max: 200,
+            count: parseInt(facetCounts?.b_100_200 || 0, 10),
+          },
+          {
+            id: '200-500',
+            label: '$200 to $500',
+            min: 200,
+            max: 500,
+            count: parseInt(facetCounts?.b_200_500 || 0, 10),
+          },
+          {
+            id: '500-above',
+            label: '$500 & Above',
+            min: 500,
+            max: null,
+            count: parseInt(facetCounts?.b_500_above || 0, 10),
+          },
+        ],
+      };
+    }
+
     return {
       products: items,
-      pagination: {
-        total: totalCount,
-        page,
-        limit,
-        totalPages: Math.ceil(totalCount / limit) || 1,
+      pagination,
+      ...(facets ? { facets } : {}),
+      filters: {
+        search: trimmedSearch || undefined,
+        categoryId: categoryId || undefined,
+        categorySlug: categorySlug || undefined,
+        brandId: brandId || undefined,
+        brandSlug: brandSlug || undefined,
+        minPrice:
+          effectiveMinPrice !== undefined ? effectiveMinPrice : undefined,
+        maxPrice:
+          effectiveMaxPrice !== undefined ? effectiveMaxPrice : undefined,
+        priceBracket: priceBracket || undefined,
+        inStock: inStock || undefined,
+        minRating: minRating || undefined,
+        sortBy,
+        sortOrder: isAscending ? 'asc' : 'desc',
       },
     };
   } catch (error) {
