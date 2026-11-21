@@ -89,20 +89,60 @@ export const updateVariantSchema = z
     message: 'At least one field is required to update variant',
   });
 
-export const queryProductsSchema = z.object({
-  page: z.coerce.number().int().positive().default(1),
-  limit: z.coerce.number().int().positive().max(100).default(20),
-  categoryId: z.coerce.number().int().positive().optional(),
-  brandId: z.coerce.number().int().positive().optional(),
-  minPrice: z.coerce.number().nonnegative().optional(),
-  maxPrice: z.coerce.number().positive().optional(),
-  inStock: z
-    .string()
-    .transform(val => val === 'true')
-    .or(z.boolean())
-    .optional(),
-  search: z.string().trim().optional(),
-  sortBy: z
-    .enum(['price_asc', 'price_desc', 'newest', 'rating'])
-    .default('newest'),
-});
+export const queryProductsSchema = z
+  .object({
+    page: z.coerce.number().int().positive().default(1),
+    limit: z.coerce.number().int().positive().max(100).default(20),
+    categoryId: z.coerce.number().int().positive().optional(),
+    categorySlug: z.string().trim().optional(),
+    brandId: z.coerce.number().int().positive().optional(),
+    brandSlug: z.string().trim().optional(),
+    minPrice: z.coerce.number().nonnegative().optional(),
+    maxPrice: z.coerce.number().positive().optional(),
+    priceBracket: z.string().trim().optional(),
+    bracket: z.string().trim().optional(),
+    inStock: z
+      .union([z.string().transform(val => val === 'true'), z.boolean()])
+      .optional(),
+    minRating: z.coerce.number().min(0).max(5).optional(),
+    includeFacets: z
+      .union([z.string().transform(val => val === 'true'), z.boolean()])
+      .optional(),
+    search: z.string().trim().optional(),
+    q: z.string().trim().optional(),
+    sortBy: z
+      .enum([
+        'price',
+        'price_asc',
+        'price_desc',
+        'popularity',
+        'popular',
+        'popularity_desc',
+        'popularity_asc',
+        'date',
+        'date_asc',
+        'date_desc',
+        'newest',
+        'oldest',
+        'rating',
+        'rating_desc',
+        'rating_asc',
+        'relevance',
+        'name_asc',
+        'name_desc',
+      ])
+      .default('newest'),
+    sortOrder: z.enum(['asc', 'desc']).optional(),
+  })
+  .transform(data => ({
+    ...data,
+    search: data.search ?? data.q,
+    priceBracket: data.priceBracket ?? data.bracket,
+  }))
+  .refine(
+    data =>
+      data.minPrice === undefined ||
+      data.maxPrice === undefined ||
+      data.minPrice <= data.maxPrice,
+    { message: 'minPrice cannot be greater than maxPrice', path: ['minPrice'] }
+  );

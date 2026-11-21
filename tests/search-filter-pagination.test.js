@@ -1,7 +1,60 @@
+import { jest } from '@jest/globals';
 import request from 'supertest';
-import app from '#src/app.js';
 import { parsePriceBracket, STANDARD_PRICE_BRACKETS } from '#utils/price.js';
 import { queryProductsSchema } from '#validations/product.validation.js';
+
+jest.unstable_mockModule('#services/product.service.js', () => ({
+  createProduct: jest.fn(),
+  getProducts: jest.fn(async (filters = {}) => {
+    const products = [];
+    const { page = 1, limit = 20, sortBy = 'newest' } = filters;
+    const result = {
+      products,
+      pagination: {
+        page,
+        limit,
+        total: 0,
+        totalPages: 0,
+        hasNextPage: false,
+        hasPrevPage: page > 1,
+        nextPage: null,
+        prevPage: page > 1 ? page - 1 : null,
+      },
+      filters: {
+        search: filters.search,
+        categoryId: filters.categoryId,
+        categorySlug: filters.categorySlug,
+        brandId: filters.brandId,
+        brandSlug: filters.brandSlug,
+        minPrice: filters.minPrice,
+        maxPrice: filters.maxPrice,
+        priceBracket: filters.priceBracket,
+        inStock: filters.inStock,
+        minRating: filters.minRating,
+        sortBy,
+        sortOrder: filters.sortOrder,
+      },
+    };
+    if (filters.includeFacets) {
+      result.facets = {
+        priceBrackets: STANDARD_PRICE_BRACKETS.map(bracket => ({
+          ...bracket,
+          count: 0,
+        })),
+      };
+    }
+    return result;
+  }),
+  getProductById: jest.fn(),
+  getProductBySlug: jest.fn(),
+  updateProduct: jest.fn(),
+  deleteProduct: jest.fn(),
+  createProductVariant: jest.fn(),
+  updateProductVariant: jest.fn(),
+  deleteProductVariant: jest.fn(),
+}));
+
+const { default: app } = await import('#src/app.js');
 
 describe('Search, Filter & Pagination Domain Suite', () => {
   describe('Price Bracket Parser Utility (parsePriceBracket)', () => {
